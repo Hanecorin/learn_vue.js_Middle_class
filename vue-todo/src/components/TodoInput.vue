@@ -4,29 +4,45 @@
     <span class="addContainer" v-on:click="addTodo">
       <i class="fas fa-plus addBtn"></i>
     </span>
+
+    <Modal v-if="showModal" @close="showModal = false">
+      
+      <h3 slot="header">
+        경고!
+        <i class="closeModalBtn fas fa-times" @click="showModal=false"></i>
+      </h3>
+      <h3 slot="body">무언가를 입력하세요.</h3>
+    </Modal>
   </div>
 </template>
 
 <script>
+import Modal from './common/AlertModal.vue';
 export default {
-  data: function(){
-    return{
-      newTodoItem:""
+  data: function () {
+    return {
+      newTodoItem: "",
+      showModal: false
     }
   },
-  methods:{
-    addTodo: function(){
-      if (this.newTodoItem !== ''){
+  methods: {
+    addTodo: function () {
+      if (this.newTodoItem !== '') {
+        this.$emit('addTodoItem', this.newTodoItem)
 
-        var obj = { completed: false, item: this.newTodoItem };
-        localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
         this.clearInput();
+      } else {
+        this.showModal = !this.showModal;
       }
-      
+
     },
-    clearInput: function(){
-      this.newTodoItem='';
+
+    clearInput: function () {
+      this.newTodoItem = '';
     }
+  },
+  components: {
+    Modal: Modal
   }
 }
 </script>
@@ -35,16 +51,19 @@ export default {
 input:focus {
   outline: none;
 }
+
 .inputBox {
   background: white;
   height: 50px;
   line-height: 50px;
   border-radius: 5px;
 }
+
 .inputBox input {
   border-style: none;
   font-size: 0.9rem;
 }
+
 .addContainer {
   float: right;
   background: linear-gradient(to right, #6478FB, #8763FB);
@@ -52,9 +71,12 @@ input:focus {
   width: 3rem;
   border-radius: 0 5px 5px 0;
 }
+
 .addBtn {
   color: white;
   vertical-align: middle;
 }
-
+.closeModalBtn {
+  color: #42b983;
+}
 </style>
